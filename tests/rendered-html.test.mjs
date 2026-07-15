@@ -28,9 +28,10 @@ test("server-renders the finished bilingual portfolio", async () => {
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /<title>כליל ישראלי \| Motion Designer &amp; Director<\/title>/);
-  assert.match(html, /כל פריים/);
-  assert.match(html, /פרויקטים נבחרים/);
+  assert.match(html, /<html[^>]*lang="en"[^>]*dir="ltr"/);
+  assert.match(html, /<title>Klil Israeli \| Motion Designer &amp; Director<\/title>/);
+  assert.match(html, /Every frame/);
+  assert.match(html, /Selected projects/);
   assert.match(html, /SHOWREEL/);
   assert.match(html, /Wix Studio/);
   assert.match(html, /Cut to Beat|קאט לביט/);
@@ -39,8 +40,8 @@ test("server-renders the finished bilingual portfolio", async () => {
   assert.match(html, /brand-carousel/);
   assert.match(html, /בנק הפועלים/);
   assert.doesNotMatch(html, /LIGHTRICKS/i);
-  assert.match(html, />אודות</);
-  assert.match(html, /בחירת שפה/);
+  assert.match(html, />About</);
+  assert.match(html, /Language/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
 });
 
@@ -49,13 +50,13 @@ test("server-renders direct contact and project brief routes", async () => {
   assert.equal(contactResponse.status, 200);
   const contactHtml = await contactResponse.text();
   assert.match(contactHtml, /mailto:klilisraeli%40gmail\.com|mailto:klilisraeli@gmail\.com/);
-  assert.match(contactHtml, /PROJECT BRIEF|טופס הפרויקט/);
+  assert.match(contactHtml, /Open the project form/);
   assert.match(contactHtml, /tel:\+972501234567/);
 
   const briefResponse = await render("/contact/brief");
   assert.equal(briefResponse.status, 200);
   const briefHtml = await briefResponse.text();
-  assert.match(briefHtml, /בריף לפרויקט/);
+  assert.match(briefHtml, /Project brief/);
   assert.doesNotMatch(briefHtml, /01 \/|02 \/|03 \/|04 \/|05 \/|06 \/|07 \/|Behance/);
   assert.match(briefHtml, /name="projectType"/);
   assert.match(briefHtml, /name="message"/);
@@ -66,12 +67,12 @@ test("server-renders project facts and case-study content", async () => {
   assert.equal(response.status, 200);
 
   const html = await response.text();
-  assert.match(html, />תחום</);
-  assert.match(html, />לקוח</);
-  assert.match(html, />שירות</);
-  assert.match(html, />שנה</);
+  assert.match(html, />Field</);
+  assert.match(html, />Client</);
+  assert.match(html, />Service</);
+  assert.match(html, />Year</);
   assert.match(html, /Wix Studio/);
-  assert.match(html, /תנופה/);
-  assert.match(html, /האתגר/);
-  assert.match(html, /הפרויקט הבא/);
+  assert.match(html, /Momentum/);
+  assert.match(html, /The challenge/);
+  assert.match(html, /Next project/);
 });

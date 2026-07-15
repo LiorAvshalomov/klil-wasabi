@@ -13,8 +13,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!project) return {};
 
   return {
-    title: `${project.title.he} / ${project.title.en} | כליל ישראלי`,
-    description: project.statement.he,
+    title: `${project.title.en} / ${project.title.he} | Klil Israeli`,
+    description: project.statement.en,
   };
 }
 
