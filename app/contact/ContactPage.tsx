@@ -14,6 +14,7 @@ const copy = {
     en: "A new project, collaboration or question.",
   },
   email: { he: "מייל ישיר", en: "Direct email" },
+  phone: { he: "טלפון", en: "Phone" },
   brief: { he: "מעדיפים בריף מסודר?", en: "Prefer a structured brief?" },
   briefCta: { he: "פתיחת טופס הפרויקט", en: "Open the project form" },
   based: { he: "בסיס", en: "Based" },
@@ -35,15 +36,25 @@ export function ContactPage() {
 
       <section className="contact-page-hero">
         <div className="contact-page-pattern" aria-hidden="true" />
-        <img className="contact-page-pepper" src="/brand/pepper.png" alt="" aria-hidden="true" />
         <div className="contact-page-copy section-shell">
-          <p className="section-label">{copy.label[language]}</p>
-          <h1><span>{copy.titleOne[language]}</span><strong>{copy.titleTwo[language]}</strong></h1>
-          <p className="contact-page-intro">{copy.intro[language]}</p>
+          <div className="contact-page-heading">
+            <p className="section-label">{copy.label[language]}</p>
+            <h1><span>{copy.titleOne[language]}</span><strong>{copy.titleTwo[language]}</strong></h1>
+            <p className="contact-page-intro">{copy.intro[language]}</p>
+          </div>
+          <div className="contact-page-visual" aria-hidden="true">
+            <img className="contact-page-mark" src="/brand/mark-dark.svg" alt="" />
+            <img className="contact-page-pepper" src="/brand/pepper.png" alt="" />
+          </div>
           <div className="contact-page-actions">
             <a className="contact-email" href={`mailto:${KLIL_EMAIL}?subject=${encodeURIComponent("New motion project")}`}>
               <small>{copy.email[language]}</small>
               <bdi>{KLIL_EMAIL}</bdi>
+              <i aria-hidden="true">↗</i>
+            </a>
+            <a className="contact-phone" href="tel:+972501234567">
+              <small>{copy.phone[language]}</small>
+              <bdi>+972501234567</bdi>
               <i aria-hidden="true">↗</i>
             </a>
             <Link className="contact-brief-link" href={languageHref("/contact/brief")}>
@@ -62,7 +73,7 @@ export function ContactPage() {
       </section>
 
       <footer className="contact-page-footer section-shell">
-        <Link className="contact-footer-brand" href={languageHref("/")}><img src="/brand/logo-light.svg" alt="Wasabi Studio" /></Link>
+        <Link className="contact-footer-brand" href={languageHref("/")}><img src="/brand/logo-dark.svg" alt="Wasabi Studio" /></Link>
         <a className="contact-footer-email" href={`mailto:${KLIL_EMAIL}`}>{KLIL_EMAIL}</a>
         <nav aria-label={language === "he" ? "קישורי תחתית" : "Footer navigation"}>
           <Link href={languageHref("/")}>{copy.home[language]}</Link>

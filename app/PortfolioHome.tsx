@@ -59,12 +59,37 @@ function t(copy: Copy, language: "he" | "en") {
 
 function BrandCarousel() {
   const railRef = useRef<HTMLDivElement>(null);
-  const drag = useRef({ active: false, x: 0, scrollLeft: 0 });
+  const drag = useRef({ active: false, x: 0, scrollLeft: 0, resumeAt: 0 });
+
+  useEffect(() => {
+    const rail = railRef.current;
+    if (!rail || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    let animationFrame = 0;
+    let lastTime = performance.now();
+    const move = (time: number) => {
+      const elapsed = Math.min(time - lastTime, 32);
+      const loopWidth = rail.scrollWidth / 2;
+
+      if (!drag.current.active && time >= drag.current.resumeAt && loopWidth > 0) {
+        rail.scrollLeft += elapsed * 0.036;
+        if (rail.scrollLeft >= loopWidth) rail.scrollLeft -= loopWidth;
+      }
+
+      lastTime = time;
+      animationFrame = window.requestAnimationFrame(move);
+    };
+
+    animationFrame = window.requestAnimationFrame(move);
+    return () => window.cancelAnimationFrame(animationFrame);
+  }, []);
 
   const onPointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
     const rail = railRef.current;
     if (!rail) return;
-    drag.current = { active: true, x: event.clientX, scrollLeft: rail.scrollLeft };
+    const loopWidth = rail.scrollWidth / 2;
+    if (rail.scrollLeft < 2 && loopWidth > 0) rail.scrollLeft = loopWidth;
+    drag.current = { active: true, x: event.clientX, scrollLeft: rail.scrollLeft, resumeAt: Number.POSITIVE_INFINITY };
     rail.setPointerCapture(event.pointerId);
     rail.classList.add("is-dragging");
   };
@@ -79,6 +104,7 @@ function BrandCarousel() {
     const rail = railRef.current;
     if (!rail) return;
     drag.current.active = false;
+    drag.current.resumeAt = performance.now() + 900;
     if (rail.hasPointerCapture(event.pointerId)) rail.releasePointerCapture(event.pointerId);
     rail.classList.remove("is-dragging");
   };
@@ -95,9 +121,9 @@ function BrandCarousel() {
       onPointerLeave={(event) => drag.current.active && endDrag(event)}
     >
       <div className="brand-carousel-track">
-        {clients.map((client) => (
-          <span className={`brand-logo ${client.className}`} key={client.name}>
-            <strong>{client.name}</strong>
+        {[...clients, ...clients].map((client, index) => (
+          <span className={`brand-logo ${client.className}`} key={`${client.name}-${index}`} aria-hidden={index >= clients.length}>
+            <strong dir="auto">{client.name}</strong>
           </span>
         ))}
       </div>
@@ -313,11 +339,6 @@ export function PortfolioHome() {
             <p className="section-label">{t(homeCopy.aboutIndex, language)}</p>
             <h2 id="about-title">{t(homeCopy.aboutTitle, language)}</h2>
             <p>{t(homeCopy.aboutBody, language)}</p>
-            <ul>
-              {homeCopy.values[language].map((value) => (
-                <li key={value}>{value}</li>
-              ))}
-            </ul>
           </div>
         </div>
       </section>
@@ -343,7 +364,7 @@ export function PortfolioHome() {
       <footer className="site-footer">
         <div className="footer-main section-shell">
           <div className="footer-brand">
-            <img src="/brand/mark-light.svg" alt="" aria-hidden="true" />
+            <img src="/brand/mark-dark.svg" alt="" aria-hidden="true" />
             <strong>WASABI</strong>
           </div>
           <div className="footer-meta">

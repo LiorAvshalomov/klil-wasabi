@@ -191,12 +191,18 @@ export const categoryLabels: Record<"all" | ProjectCategory, Copy> = {
 export const clients = [
   { name: "Wix", className: "logo-wix", note: "TECH" },
   { name: "monday", className: "logo-monday", note: "PRODUCT" },
+  { name: "בנק הפועלים", className: "logo-hapoalim", note: "FINANCE" },
   { name: "fiverr.", className: "logo-fiverr", note: "MARKETPLACE" },
+  { name: "בנק לאומי", className: "logo-leumi", note: "FINANCE" },
   { name: "Similarweb", className: "logo-similarweb", note: "DATA" },
   { name: "AppsFlyer", className: "logo-appsflyer", note: "MOBILE" },
+  { name: "תנובה", className: "logo-tnuva", note: "CONSUMER" },
   { name: "LIGHTRICKS", className: "logo-lightricks", note: "CREATIVE" },
+  { name: "EL AL", className: "logo-elal", note: "AVIATION" },
   { name: "LMND", className: "logo-lemonade", note: "INSURTECH" },
+  { name: "קשת 12", className: "logo-keshet", note: "MEDIA" },
   { name: "taboola", className: "logo-taboola", note: "MEDIA" },
   { name: "Waze", className: "logo-waze", note: "MOBILITY" },
+  { name: "partner", className: "logo-partner", note: "TELECOM" },
   { name: "PAPAYA", className: "logo-papaya", note: "GLOBAL" },
 ];

@@ -37,6 +37,7 @@ test("server-renders the finished bilingual portfolio", async () => {
   assert.doesNotMatch(html, /Vertical Pressure|לחץ אנכי/);
   assert.doesNotMatch(html, /DIRECTION · DESIGN · MOTION|Pause on a name|Behance/);
   assert.match(html, /brand-carousel/);
+  assert.match(html, /בנק הפועלים/);
   assert.match(html, />אודות</);
   assert.match(html, /בחירת שפה/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
@@ -48,6 +49,7 @@ test("server-renders direct contact and project brief routes", async () => {
   const contactHtml = await contactResponse.text();
   assert.match(contactHtml, /mailto:klilisraeli%40gmail\.com|mailto:klilisraeli@gmail\.com/);
   assert.match(contactHtml, /PROJECT BRIEF|טופס הפרויקט/);
+  assert.match(contactHtml, /tel:\+972501234567/);
 
   const briefResponse = await render("/contact/brief");
   assert.equal(briefResponse.status, 200);
