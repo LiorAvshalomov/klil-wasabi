@@ -3738,10 +3738,6 @@ html[lang="en"] .project-hero-copy h1 {
   cursor: grabbing;
 }
 
-.brand-carousel.is-dragging .brand-carousel-track {
-  animation-play-state: paused;
-}
-
 .brand-carousel-track {
   width: max-content;
   min-width: 100%;
@@ -3749,14 +3745,6 @@ html[lang="en"] .project-hero-copy h1 {
   border-block: 1px solid rgb(225 225 225 / 18%);
   display: flex;
   align-items: stretch;
-  animation: brand-carousel-loop 52s linear infinite;
-  will-change: transform;
-}
-
-@keyframes brand-carousel-loop {
-  to {
-    transform: translate3d(-50%, 0, 0);
-  }
 }
 
 .brand-logo {

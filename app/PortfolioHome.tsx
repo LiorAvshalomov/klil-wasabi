@@ -59,14 +59,33 @@ function t(copy: Copy, language: "he" | "en") {
 
 function BrandCarousel() {
   const railRef = useRef<HTMLDivElement>(null);
-  const drag = useRef({ active: false, x: 0, scrollLeft: 0 });
+  const drag = useRef({ active: false, x: 0, scrollLeft: 0, resumeAt: 0 });
+
+  useEffect(() => {
+    const rail = railRef.current;
+    if (!rail) return;
+
+    let lastTime = performance.now();
+    const timer = window.setInterval(() => {
+      const time = performance.now();
+      const elapsed = Math.min(time - lastTime, 48);
+      const loopWidth = rail.scrollWidth / 2;
+
+      if (!drag.current.active && time >= drag.current.resumeAt && loopWidth > 0) {
+        const next = rail.scrollLeft + elapsed * 0.065;
+        rail.scrollLeft = next >= loopWidth ? next - loopWidth : next;
+      }
+
+      lastTime = time;
+    }, 20);
+
+    return () => window.clearInterval(timer);
+  }, []);
 
   const onPointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
     const rail = railRef.current;
     if (!rail) return;
-    const loopWidth = rail.scrollWidth / 2;
-    if (rail.scrollLeft < 2 && loopWidth > 0) rail.scrollLeft = loopWidth;
-    drag.current = { active: true, x: event.clientX, scrollLeft: rail.scrollLeft };
+    drag.current = { active: true, x: event.clientX, scrollLeft: rail.scrollLeft, resumeAt: Number.POSITIVE_INFINITY };
     rail.setPointerCapture(event.pointerId);
     rail.classList.add("is-dragging");
   };
@@ -74,13 +93,17 @@ function BrandCarousel() {
   const onPointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
     const rail = railRef.current;
     if (!rail || !drag.current.active) return;
-    rail.scrollLeft = drag.current.scrollLeft - (event.clientX - drag.current.x);
+    const loopWidth = rail.scrollWidth / 2;
+    if (loopWidth <= 0) return;
+    const next = drag.current.scrollLeft - (event.clientX - drag.current.x);
+    rail.scrollLeft = ((next % loopWidth) + loopWidth) % loopWidth;
   };
 
   const endDrag = (event: ReactPointerEvent<HTMLDivElement>) => {
     const rail = railRef.current;
     if (!rail) return;
     drag.current.active = false;
+    drag.current.resumeAt = performance.now() + 450;
     if (rail.hasPointerCapture(event.pointerId)) rail.releasePointerCapture(event.pointerId);
     rail.classList.remove("is-dragging");
   };
