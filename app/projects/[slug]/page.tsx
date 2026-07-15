@@ -25,5 +25,5 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
   if (!project) notFound();
 
   const nextProject = projects[(projectIndex + 1) % projects.length];
-  return <ProjectView project={project} projectIndex={projectIndex} nextProject={nextProject} />;
+  return <ProjectView project={project} nextProject={nextProject} />;
 }

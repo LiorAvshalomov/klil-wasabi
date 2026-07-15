@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
 import {
   categoryLabels,
   clients,
@@ -10,13 +10,14 @@ import {
   type ProjectCategory,
 } from "./project-data";
 import { useLanguage } from "./use-language";
+import { SiteHeader } from "./SiteHeader";
 
 type Filter = "all" | ProjectCategory;
 
 const homeCopy = {
   skip: { he: "דילוג לעבודות", en: "Skip to work" },
   navWork: { he: "עבודות", en: "Work" },
-  navAbout: { he: "כליל", en: "Klil" },
+  navAbout: { he: "אודות", en: "About" },
   navContact: { he: "דברו איתי", en: "Contact" },
   heroTop: { he: "כליל ישראלי · Motion Designer & Director", en: "Klil Israeli · Motion Designer & Director" },
   heroLineOne: { he: "כל פריים", en: "Every frame" },
@@ -28,18 +29,10 @@ const homeCopy = {
   hide: { he: "הסתרה", en: "Hide" },
   show: { he: "הצגה", en: "Show" },
   scroll: { he: "גלו עבודות", en: "Explore work" },
-  workIndex: { he: "01 / עבודות נבחרות", en: "01 / Selected work" },
-  workTitle: { he: "עבודות בתנועה.", en: "Work in motion." },
-  workCount: { he: "חמישה פרויקטים נבחרים", en: "Five selected projects" },
+  workTitle: { he: "פרויקטים נבחרים", en: "Selected projects" },
   openProject: { he: "פתיחת פרויקט", en: "Open project" },
-  kineticStrip: {
-    he: "בימוי · עיצוב · תנועה · קצב · סאונד · ",
-    en: "DIRECTION · DESIGN · MOTION · RHYTHM · SOUND · ",
-  },
-  clientsIndex: { he: "02 / שיתופי פעולה נבחרים", en: "02 / Selected collaborations" },
-  clientsTitle: { he: "חברות טובות. פריימים טובים.", en: "Good company. Better frames." },
-  clientsHint: { he: "עצרו על שם", en: "Pause on a name" },
-  aboutIndex: { he: "03 / כליל ישראלי", en: "03 / Klil Israeli" },
+  clientsTitle: { he: "מותגים שעבדתי איתם", en: "Brands I’ve worked with" },
+  aboutIndex: { he: "אודות", en: "About" },
   aboutTitle: {
     he: "יד אחת על הרעיון. יד שנייה על הטיימליין.",
     en: "One hand on the idea. The other on the timeline.",
@@ -52,32 +45,59 @@ const homeCopy = {
     he: ["רעיון חד", "תהליך ישיר", "ביצוע מדויק"],
     en: ["Sharp idea", "Direct process", "Precise craft"],
   },
-  contactIndex: { he: "04 / בואו נזיז משהו", en: "04 / Let’s move something" },
-  contactTitle: { he: "יש משהו שצריך לזוז?", en: "Got something that should move?" },
+  contactIndex: { he: "יצירת קשר", en: "Contact" },
+  contactTitle: { he: "בואו נעבוד יחד.", en: "Let’s work together." },
   contactDirect: { he: "דברו עם כליל", en: "Talk to Klil" },
   contactBrief: { he: "שליחת בריף", en: "Send a brief" },
   footerMotion: { he: "Motion Design · Direction", en: "Motion Design · Direction" },
   footerLocation: { he: "תל אביב, ישראל", en: "Tel Aviv, Israel" },
-  temporary: {
-    he: "המדיה ושמות הלקוחות הם תוכן המחשה זמני עד להטמעת החומרים הסופיים של כליל.",
-    en: "Media and client names are temporary presentation content until Klil’s final materials are added.",
-  },
 } satisfies Record<string, Copy | { he: string[]; en: string[] }>;
 
 function t(copy: Copy, language: "he" | "en") {
   return copy[language];
 }
 
-function ClientTrack({ reverse = false }: { reverse?: boolean }) {
-  const repeated = [...clients, ...clients];
+function BrandCarousel() {
+  const railRef = useRef<HTMLDivElement>(null);
+  const drag = useRef({ active: false, x: 0, scrollLeft: 0 });
+
+  const onPointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const rail = railRef.current;
+    if (!rail) return;
+    drag.current = { active: true, x: event.clientX, scrollLeft: rail.scrollLeft };
+    rail.setPointerCapture(event.pointerId);
+    rail.classList.add("is-dragging");
+  };
+
+  const onPointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const rail = railRef.current;
+    if (!rail || !drag.current.active) return;
+    rail.scrollLeft = drag.current.scrollLeft - (event.clientX - drag.current.x);
+  };
+
+  const endDrag = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const rail = railRef.current;
+    if (!rail) return;
+    drag.current.active = false;
+    if (rail.hasPointerCapture(event.pointerId)) rail.releasePointerCapture(event.pointerId);
+    rail.classList.remove("is-dragging");
+  };
+
   return (
-    <div className={`client-rail ${reverse ? "is-reverse" : ""}`}>
-      <div className="client-track">
-        {repeated.map((client, index) => (
-          <span className={`client-wordmark ${client.className}`} tabIndex={index < clients.length ? 0 : -1} key={`${client.name}-${index}`}>
-            <i aria-hidden="true" />
+    <div
+      className="brand-carousel"
+      ref={railRef}
+      dir="ltr"
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={endDrag}
+      onPointerCancel={endDrag}
+      onPointerLeave={(event) => drag.current.active && endDrag(event)}
+    >
+      <div className="brand-carousel-track">
+        {clients.map((client) => (
+          <span className={`brand-logo ${client.className}`} key={client.name}>
             <strong>{client.name}</strong>
-            <small>{client.note}</small>
           </span>
         ))}
       </div>
@@ -160,22 +180,7 @@ export function PortfolioHome() {
       <a className="skip-link" href="#work">{t(homeCopy.skip, language)}</a>
       <div className="scroll-progress" aria-hidden="true" />
 
-      <header className="site-header">
-        <Link className="brand-link" href={languageHref("/")} aria-label="Wasabi Studio — Home">
-          <img src="/brand/logo-dark.svg" alt="Wasabi Studio" />
-          <span>{language === "he" ? "כליל ישראלי" : "KLIL ISRAELI"}</span>
-        </Link>
-        <nav aria-label={language === "he" ? "ניווט ראשי" : "Main navigation"}>
-          <a href="#work">{t(homeCopy.navWork, language)}</a>
-          <a href="#about">{t(homeCopy.navAbout, language)}</a>
-          <Link href={languageHref("/contact")}>{t(homeCopy.navContact, language)}</Link>
-        </nav>
-        <div className="language-switch" aria-label={language === "he" ? "בחירת שפה" : "Language"}>
-          <button className={language === "he" ? "active" : ""} onClick={() => setSiteLanguage("he")} type="button">עב</button>
-          <span>/</span>
-          <button className={language === "en" ? "active" : ""} onClick={() => setSiteLanguage("en")} type="button">EN</button>
-        </div>
-      </header>
+      <SiteHeader language={language} languageHref={languageHref} setSiteLanguage={setSiteLanguage} home />
 
       <section className="hero" aria-labelledby="hero-title">
         <video
@@ -228,10 +233,8 @@ export function PortfolioHome() {
       <section className="work-section" id="work" aria-labelledby="work-title">
         <div className="work-heading section-shell" data-reveal>
           <div>
-            <p className="section-label">{t(homeCopy.workIndex, language)}</p>
             <h2 id="work-title">{t(homeCopy.workTitle, language)}</h2>
           </div>
-          <p className="work-count">{t(homeCopy.workCount, language)}</p>
         </div>
 
         <div className="work-filters section-shell" role="group" aria-label={language === "he" ? "סינון עבודות" : "Filter work"}>
@@ -250,7 +253,6 @@ export function PortfolioHome() {
 
         <div className="work-board section-shell" aria-live="polite">
           {visibleProjects.map((project, visibleIndex) => {
-            const originalIndex = projects.findIndex((item) => item.slug === project.slug);
             return (
               <Link
                 href={languageHref(`/projects/${project.slug}`)}
@@ -271,7 +273,6 @@ export function PortfolioHome() {
                     preload="metadata"
                     aria-hidden="true"
                   />
-                  <span className="work-card-index">0{originalIndex + 1}</span>
                   <span className="work-card-arrow" aria-hidden="true">↗</span>
                 </div>
                 <div className="work-caption">
@@ -290,33 +291,11 @@ export function PortfolioHome() {
         </div>
       </section>
 
-      <section className="motion-ribbon" aria-hidden="true">
-        {[false, true].map((reverse) => (
-          <div className={`motion-ribbon-rail ${reverse ? "is-reverse" : ""}`} key={String(reverse)}>
-            <div className="motion-ribbon-track">
-              {[0, 1, 2, 3].map((item) => (
-                <span key={item}>
-                  {t(homeCopy.kineticStrip, language)}
-                  <img src="/brand/pepper.png" alt="" />
-                </span>
-              ))}
-            </div>
-          </div>
-        ))}
-      </section>
-
       <section className="clients-section" aria-labelledby="clients-title">
         <div className="clients-head section-shell" data-reveal>
-          <div>
-            <p className="section-label">{t(homeCopy.clientsIndex, language)}</p>
-            <h2 id="clients-title">{t(homeCopy.clientsTitle, language)}</h2>
-          </div>
-          <p className="clients-hint"><i aria-hidden="true" />{t(homeCopy.clientsHint, language)}</p>
+          <h2 id="clients-title">{t(homeCopy.clientsTitle, language)}</h2>
         </div>
-        <div className="client-motion" data-reveal>
-          <ClientTrack />
-          <ClientTrack reverse />
-        </div>
+        <BrandCarousel />
       </section>
 
       <section className="about-section" id="about" aria-labelledby="about-title">
@@ -335,8 +314,8 @@ export function PortfolioHome() {
             <h2 id="about-title">{t(homeCopy.aboutTitle, language)}</h2>
             <p>{t(homeCopy.aboutBody, language)}</p>
             <ul>
-              {homeCopy.values[language].map((value, index) => (
-                <li key={value}><span>0{index + 1}</span>{value}</li>
+              {homeCopy.values[language].map((value) => (
+                <li key={value}>{value}</li>
               ))}
             </ul>
           </div>
@@ -373,12 +352,11 @@ export function PortfolioHome() {
           </div>
           <div className="footer-links">
             <Link href={languageHref("/contact")}>{t(homeCopy.navContact, language)} ↗</Link>
-            <a href="https://www.behance.net/klilisraeli" target="_blank" rel="noreferrer">Behance ↗</a>
+            <a href="#work">{t(homeCopy.navWork, language)}</a>
           </div>
         </div>
         <div className="footer-base section-shell">
           <span>© 2026 KLIL ISRAELI</span>
-          <span>{t(homeCopy.temporary, language)}</span>
           <span>WASABI®</span>
         </div>
       </footer>

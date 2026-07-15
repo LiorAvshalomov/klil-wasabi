@@ -3,16 +3,15 @@
 import Link from "next/link";
 import { KLIL_EMAIL } from "../contact-data";
 import { useLanguage } from "../use-language";
+import { SiteHeader } from "../SiteHeader";
 
 const copy = {
-  home: { he: "דף הבית", en: "Home" },
-  back: { he: "חזרה לעבודות", en: "Back to work" },
-  label: { he: "CONTACT / 01", en: "CONTACT / 01" },
-  titleOne: { he: "יש משהו", en: "Something" },
-  titleTwo: { he: "שצריך לזוז?", en: "needs to move?" },
+  label: { he: "יצירת קשר", en: "Contact" },
+  titleOne: { he: "בואו", en: "Let’s" },
+  titleTwo: { he: "נדבר.", en: "talk." },
   intro: {
-    he: "ספרו לכליל מה בונים, מתי זה צריך לקרות, ואיפה התנועה יכולה לעשות את ההבדל.",
-    en: "Tell Klil what you’re building, when it needs to happen and where motion can make the difference.",
+    he: "פרויקט חדש, שיתוף פעולה או שאלה.",
+    en: "A new project, collaboration or question.",
   },
   email: { he: "מייל ישיר", en: "Direct email" },
   brief: { he: "מעדיפים בריף מסודר?", en: "Prefer a structured brief?" },
@@ -23,7 +22,8 @@ const copy = {
   work: { he: "פרילנס · רימוט", en: "Freelance · Remote" },
   response: { he: "זמן תגובה", en: "Response" },
   responseTime: { he: "בדרך כלל תוך 1–2 ימי עבודה", en: "Usually within 1–2 working days" },
-  behance: { he: "עבודות ב־Behance", en: "Work on Behance" },
+  home: { he: "דף הבית", en: "Home" },
+  workLink: { he: "עבודות", en: "Work" },
 };
 
 export function ContactPage() {
@@ -31,18 +31,7 @@ export function ContactPage() {
 
   return (
     <main className={`contact-page ${switching ? "is-switching-language" : ""}`}>
-      <header className="site-header contact-page-header">
-        <Link className="brand-link" href={languageHref("/")} aria-label={copy.home[language]}>
-          <img src="/brand/logo-dark.svg" alt="Wasabi Studio" />
-          <span>{language === "he" ? "כליל ישראלי" : "KLIL ISRAELI"}</span>
-        </Link>
-        <Link className="project-back" href={languageHref("/#work")}>← {copy.back[language]}</Link>
-        <div className="language-switch" aria-label={language === "he" ? "בחירת שפה" : "Language"}>
-          <button className={language === "he" ? "active" : ""} onClick={() => setSiteLanguage("he")} type="button">עב</button>
-          <span>/</span>
-          <button className={language === "en" ? "active" : ""} onClick={() => setSiteLanguage("en")} type="button">EN</button>
-        </div>
-      </header>
+      <SiteHeader language={language} languageHref={languageHref} setSiteLanguage={setSiteLanguage} />
 
       <section className="contact-page-hero">
         <div className="contact-page-pattern" aria-hidden="true" />
@@ -67,17 +56,21 @@ export function ContactPage() {
       </section>
 
       <section className="contact-facts section-shell" aria-label={language === "he" ? "פרטי התקשרות" : "Contact details"}>
-        <div><span>01</span><small>{copy.based[language]}</small><strong>{copy.location[language]}</strong></div>
-        <div><span>02</span><small>{copy.available[language]}</small><strong>{copy.work[language]}</strong></div>
-        <div><span>03</span><small>{copy.response[language]}</small><strong>{copy.responseTime[language]}</strong></div>
-        <a href="https://www.behance.net/klilisraeli" target="_blank" rel="noreferrer"><span>04</span><small>BEHANCE</small><strong>{copy.behance[language]} ↗</strong></a>
+        <div><small>{copy.based[language]}</small><strong>{copy.location[language]}</strong></div>
+        <div><small>{copy.available[language]}</small><strong>{copy.work[language]}</strong></div>
+        <div><small>{copy.response[language]}</small><strong>{copy.responseTime[language]}</strong></div>
       </section>
 
       <footer className="contact-page-footer section-shell">
-        <Link href={languageHref("/")}><img src="/brand/logo-light.svg" alt="Wasabi Studio" /></Link>
-        <span>© 2026 KLIL ISRAELI · TEL AVIV</span>
+        <Link className="contact-footer-brand" href={languageHref("/")}><img src="/brand/logo-light.svg" alt="Wasabi Studio" /></Link>
+        <a className="contact-footer-email" href={`mailto:${KLIL_EMAIL}`}>{KLIL_EMAIL}</a>
+        <nav aria-label={language === "he" ? "קישורי תחתית" : "Footer navigation"}>
+          <Link href={languageHref("/")}>{copy.home[language]}</Link>
+          <Link href={languageHref("/#work")}>{copy.workLink[language]}</Link>
+          <Link href={languageHref("/contact/brief")}>{copy.briefCta[language]}</Link>
+        </nav>
+        <span className="contact-footer-legal">© 2026 KLIL ISRAELI · TEL AVIV</span>
       </footer>
     </main>
   );
 }
-

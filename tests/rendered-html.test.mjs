@@ -30,11 +30,14 @@ test("server-renders the finished bilingual portfolio", async () => {
   const html = await response.text();
   assert.match(html, /<title>כליל ישראלי \| Motion Designer &amp; Director<\/title>/);
   assert.match(html, /כל פריים/);
-  assert.match(html, /עבודות נבחרות/);
+  assert.match(html, /פרויקטים נבחרים/);
   assert.match(html, /SHOWREEL/);
   assert.match(html, /Wix Studio/);
   assert.match(html, /Cut to Beat|קאט לביט/);
   assert.doesNotMatch(html, /Vertical Pressure|לחץ אנכי/);
+  assert.doesNotMatch(html, /DIRECTION · DESIGN · MOTION|Pause on a name|Behance/);
+  assert.match(html, /brand-carousel/);
+  assert.match(html, />אודות</);
   assert.match(html, /בחירת שפה/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
 });
@@ -49,7 +52,8 @@ test("server-renders direct contact and project brief routes", async () => {
   const briefResponse = await render("/contact/brief");
   assert.equal(briefResponse.status, 200);
   const briefHtml = await briefResponse.text();
-  assert.match(briefHtml, /PROJECT BRIEF \/ 02/);
+  assert.match(briefHtml, /בריף לפרויקט/);
+  assert.doesNotMatch(briefHtml, /01 \/|02 \/|03 \/|04 \/|05 \/|06 \/|07 \/|Behance/);
   assert.match(briefHtml, /name="projectType"/);
   assert.match(briefHtml, /name="message"/);
 });

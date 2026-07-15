@@ -1,18 +1,16 @@
 "use client";
 
-import Link from "next/link";
 import { type FormEvent, useState } from "react";
 import { KLIL_EMAIL } from "../../contact-data";
 import { useLanguage } from "../../use-language";
+import { SiteHeader } from "../../SiteHeader";
 
 const copy = {
-  home: { he: "דף הבית", en: "Home" },
-  back: { he: "חזרה ליצירת קשר", en: "Back to contact" },
-  label: { he: "PROJECT BRIEF / 02", en: "PROJECT BRIEF / 02" },
-  title: { he: "בואו נבין מה צריך לזוז.", en: "Let’s find what needs to move." },
+  label: { he: "בריף לפרויקט", en: "Project brief" },
+  title: { he: "ספרו לי על הפרויקט.", en: "Tell me about the project." },
   intro: {
-    he: "כמה פרטים קצרים עוזרים לכליל להגיע לשיחה הראשונה עם הכיוון, הקצב והשאלות הנכונות.",
-    en: "A few details help Klil arrive at the first conversation with the right direction, rhythm and questions.",
+    he: "הפרטים שצריך כדי להתחיל נכון.",
+    en: "The details needed to start right.",
   },
   fields: {
     name: { he: "שם מלא", en: "Full name" },
@@ -40,10 +38,6 @@ const copy = {
     en: ["Up to ₪15K", "₪15K–30K", "₪30K–60K", "₪60K+", "Not defined yet"],
   },
   submit: { he: "הכנת המייל", en: "Prepare email" },
-  note: {
-    he: "בלחיצה תיפתח אפליקציית המייל שלך עם הבריף מוכן לשליחה ישירה לכליל.",
-    en: "This opens your email app with the brief prepared for direct delivery to Klil.",
-  },
   ready: { he: "המייל מוכן — נשאר רק לשלוח.", en: "Your email is ready — just hit send." },
 };
 
@@ -72,18 +66,7 @@ export function BriefForm() {
 
   return (
     <main className={`brief-page ${switching ? "is-switching-language" : ""}`}>
-      <header className="site-header contact-page-header">
-        <Link className="brand-link" href={languageHref("/")} aria-label={copy.home[language]}>
-          <img src="/brand/logo-dark.svg" alt="Wasabi Studio" />
-          <span>{language === "he" ? "כליל ישראלי" : "KLIL ISRAELI"}</span>
-        </Link>
-        <Link className="project-back" href={languageHref("/contact")}>← {copy.back[language]}</Link>
-        <div className="language-switch" aria-label={language === "he" ? "בחירת שפה" : "Language"}>
-          <button className={language === "he" ? "active" : ""} onClick={() => setSiteLanguage("he")} type="button">עב</button>
-          <span>/</span>
-          <button className={language === "en" ? "active" : ""} onClick={() => setSiteLanguage("en")} type="button">EN</button>
-        </div>
-      </header>
+      <SiteHeader language={language} languageHref={languageHref} setSiteLanguage={setSiteLanguage} />
 
       <div className="brief-layout section-shell">
         <aside className="brief-intro">
@@ -95,42 +78,42 @@ export function BriefForm() {
 
         <form className="brief-form" onSubmit={handleSubmit}>
           <div className="form-field">
-            <label htmlFor="brief-name">01 / {copy.fields.name[language]}</label>
+            <label htmlFor="brief-name">{copy.fields.name[language]}</label>
             <input id="brief-name" name="name" type="text" placeholder={copy.placeholders.name[language]} autoComplete="name" required />
           </div>
           <div className="form-field">
-            <label htmlFor="brief-email">02 / {copy.fields.email[language]}</label>
+            <label htmlFor="brief-email">{copy.fields.email[language]}</label>
             <input id="brief-email" name="email" type="email" placeholder={copy.placeholders.email[language]} autoComplete="email" required />
           </div>
           <div className="form-field">
-            <label htmlFor="brief-company">03 / {copy.fields.company[language]}</label>
+            <label htmlFor="brief-company">{copy.fields.company[language]}</label>
             <input id="brief-company" name="company" type="text" placeholder={copy.placeholders.company[language]} autoComplete="organization" />
           </div>
           <div className="form-field">
-            <label htmlFor="brief-type">04 / {copy.fields.type[language]}</label>
+            <label htmlFor="brief-type">{copy.fields.type[language]}</label>
             <select id="brief-type" name="projectType" defaultValue="" required>
               <option value="" disabled>{copy.choose[language]}</option>
               {copy.projectTypes[language].map((option) => <option key={option}>{option}</option>)}
             </select>
           </div>
           <div className="form-field">
-            <label htmlFor="brief-budget">05 / {copy.fields.budget[language]}</label>
+            <label htmlFor="brief-budget">{copy.fields.budget[language]}</label>
             <select id="brief-budget" name="budget" defaultValue="" required>
               <option value="" disabled>{copy.choose[language]}</option>
               {copy.budgets[language].map((option) => <option key={option}>{option}</option>)}
             </select>
           </div>
           <div className="form-field">
-            <label htmlFor="brief-timeline">06 / {copy.fields.timeline[language]}</label>
+            <label htmlFor="brief-timeline">{copy.fields.timeline[language]}</label>
             <input id="brief-timeline" name="timeline" type="text" placeholder={copy.placeholders.timeline[language]} required />
           </div>
           <div className="form-field form-field--wide">
-            <label htmlFor="brief-message">07 / {copy.fields.message[language]}</label>
+            <label htmlFor="brief-message">{copy.fields.message[language]}</label>
             <textarea id="brief-message" name="message" rows={6} placeholder={copy.placeholders.message[language]} required />
           </div>
           <div className="brief-submit form-field--wide">
             <button type="submit"><span>{copy.submit[language]}</span><i aria-hidden="true">↗</i></button>
-            <p aria-live="polite">{prepared ? copy.ready[language] : copy.note[language]}</p>
+            <p aria-live="polite">{prepared ? copy.ready[language] : ""}</p>
           </div>
         </form>
       </div>

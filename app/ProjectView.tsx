@@ -4,10 +4,9 @@ import Link from "next/link";
 import { useEffect } from "react";
 import type { Project } from "./project-data";
 import { useLanguage } from "./use-language";
+import { SiteHeader } from "./SiteHeader";
 
 const copy = {
-  home: { he: "דף הבית", en: "Home" },
-  back: { he: "כל העבודות", en: "All work" },
   facts: {
     he: ["תחום", "לקוח", "שירות", "שנה"],
     en: ["Field", "Client", "Service", "Year"],
@@ -18,16 +17,15 @@ const copy = {
   },
   next: { he: "הפרויקט הבא", en: "Next project" },
   contact: { he: "דברו איתי", en: "Contact" },
-  temporary: { he: "פרויקט ומדיה להמחשה", en: "Project and media for presentation" },
+  note: { he: "על הפרויקט", en: "Project note" },
 };
 
 type ProjectViewProps = {
   project: Project;
-  projectIndex: number;
   nextProject: Project;
 };
 
-export function ProjectView({ project, projectIndex, nextProject }: ProjectViewProps) {
+export function ProjectView({ project, nextProject }: ProjectViewProps) {
   const { language, languageHref, setSiteLanguage, switching } = useLanguage();
 
   useEffect(() => {
@@ -75,18 +73,7 @@ export function ProjectView({ project, projectIndex, nextProject }: ProjectViewP
       style={{ "--project-accent": project.accent } as React.CSSProperties}
     >
       <div className="scroll-progress" aria-hidden="true" />
-      <header className="site-header project-header">
-        <Link className="brand-link" href={languageHref("/")} aria-label={copy.home[language]}>
-          <img src="/brand/logo-dark.svg" alt="Wasabi Studio" />
-          <span>{language === "he" ? "כליל ישראלי" : "KLIL ISRAELI"}</span>
-        </Link>
-        <Link className="project-back" href={languageHref("/#work")}>← {copy.back[language]}</Link>
-        <div className="language-switch" aria-label={language === "he" ? "בחירת שפה" : "Language"}>
-          <button className={language === "he" ? "active" : ""} onClick={() => setSiteLanguage("he")} type="button">עב</button>
-          <span>/</span>
-          <button className={language === "en" ? "active" : ""} onClick={() => setSiteLanguage("en")} type="button">EN</button>
-        </div>
-      </header>
+      <SiteHeader language={language} languageHref={languageHref} setSiteLanguage={setSiteLanguage} />
 
       <article>
         <section className="project-hero">
@@ -106,11 +93,6 @@ export function ProjectView({ project, projectIndex, nextProject }: ProjectViewP
           </div>
 
           <div className="project-hero-copy section-shell">
-            <div className="project-counter">
-              <span>0{projectIndex + 1}</span>
-              <i />
-              <span>05</span>
-            </div>
             <p>{project.eyebrow[language]} / {project.year}</p>
             <h1>{project.title[language]}</h1>
             <span className="project-client">FOR {project.client}</span>
@@ -143,7 +125,7 @@ export function ProjectView({ project, projectIndex, nextProject }: ProjectViewP
         </dl>
 
         <section className="project-statement section-shell" data-reveal>
-          <span>W / 0{projectIndex + 1}</span>
+          <span>{copy.note[language]}</span>
           <h2>{project.statement[language]}</h2>
           <img src="/brand/mark-dark.svg" alt="" aria-hidden="true" />
         </section>
@@ -151,13 +133,12 @@ export function ProjectView({ project, projectIndex, nextProject }: ProjectViewP
         <section className="project-process section-shell">
           <div className="project-process-visual project-process-visual--one" data-reveal>
             <img src={project.poster} alt="" />
-            <span>FRAME / 001</span>
+            <span>KEYFRAME</span>
           </div>
 
           <div className="project-chapters" data-reveal>
             {chapters.map((chapter, index) => (
               <div className="project-chapter" key={copy.chapters[language][index]}>
-                <span>0{index + 1}</span>
                 <div>
                   <h3>{copy.chapters[language][index]}</h3>
                   <p>{chapter}</p>
@@ -168,7 +149,7 @@ export function ProjectView({ project, projectIndex, nextProject }: ProjectViewP
 
           <div className="project-process-visual project-process-visual--two" data-reveal>
             <video src={project.video} poster={project.poster} autoPlay muted loop playsInline preload="metadata" />
-            <span>MOTION / SYSTEM</span>
+            <span>MOTION SYSTEM</span>
           </div>
 
           <div className="project-frame-wall" data-reveal aria-hidden="true">
@@ -186,7 +167,7 @@ export function ProjectView({ project, projectIndex, nextProject }: ProjectViewP
           <video src={nextProject.video} poster={nextProject.poster} autoPlay muted loop playsInline preload="metadata" aria-hidden="true" />
           <div className="next-project-shade" aria-hidden="true" />
           <div>
-            <span>{copy.next[language]} / 0{((projectIndex + 1) % 5) + 1}</span>
+            <span>{copy.next[language]}</span>
             <strong>{nextProject.title[language]}</strong>
           </div>
           <i aria-hidden="true">↗</i>
@@ -196,7 +177,7 @@ export function ProjectView({ project, projectIndex, nextProject }: ProjectViewP
       <footer className="project-footer section-shell">
         <Link href={languageHref("/")}><img src="/brand/logo-light.svg" alt="Wasabi Studio" /></Link>
         <Link href={languageHref("/contact")}>{copy.contact[language]} ↗</Link>
-        <span>{copy.temporary[language]} · © 2026</span>
+        <span>© 2026 KLIL ISRAELI</span>
       </footer>
     </main>
   );
