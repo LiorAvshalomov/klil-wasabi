@@ -4083,16 +4083,16 @@ html[lang="en"] .project-hero-copy h1 {
 }
 
 .about-section {
-  padding-block: clamp(64px, 7vw, 104px);
+  padding-block: clamp(84px, 9vw, 142px);
 }
 
 .about-grid {
-  grid-template-columns: minmax(300px, .72fr) minmax(0, 1.28fr);
-  gap: clamp(42px, 6vw, 100px);
+  grid-template-columns: minmax(360px, .82fr) minmax(0, 1.18fr);
+  gap: clamp(52px, 7vw, 122px);
 }
 
 .about-portrait {
-  width: min(100%, 520px);
+  width: min(100%, 620px);
 }
 
 .portrait-window {
@@ -4100,14 +4100,14 @@ html[lang="en"] .project-hero-copy h1 {
 }
 
 .about-copy h2 {
-  margin-block: 24px 26px;
-  font-size: clamp(48px, 5.1vw, 86px);
-  line-height: .88;
+  margin-block: 28px 30px;
+  font-size: clamp(56px, 6.2vw, 104px);
+  line-height: .86;
 }
 
 .about-copy > p:not(.section-label) {
-  max-width: 670px;
-  font-size: clamp(18px, 1.45vw, 23px);
+  max-width: 720px;
+  font-size: clamp(19px, 1.6vw, 25px);
 }
 
 .contact-page-copy {
@@ -4299,12 +4299,12 @@ html[lang="en"] .project-hero-copy h1 {
   }
 
   .about-portrait {
-    width: min(72%, 430px);
+    width: min(82%, 500px);
   }
 
   .about-copy h2 {
-    margin-block: 20px 22px;
-    font-size: clamp(46px, 13vw, 72px);
+    margin-block: 22px 25px;
+    font-size: clamp(52px, 14vw, 82px);
   }
 
   .about-copy > p:not(.section-label) {
