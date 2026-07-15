@@ -38,6 +38,7 @@ test("server-renders the finished bilingual portfolio", async () => {
   assert.doesNotMatch(html, /DIRECTION · DESIGN · MOTION|Pause on a name|Behance/);
   assert.match(html, /brand-carousel/);
   assert.match(html, /בנק הפועלים/);
+  assert.doesNotMatch(html, /LIGHTRICKS/i);
   assert.match(html, />אודות</);
   assert.match(html, /בחירת שפה/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);

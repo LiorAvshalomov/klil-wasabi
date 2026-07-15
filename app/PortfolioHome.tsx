@@ -63,7 +63,7 @@ function BrandCarousel() {
 
   useEffect(() => {
     const rail = railRef.current;
-    if (!rail || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!rail) return;
 
     let animationFrame = 0;
     let lastTime = performance.now();
@@ -72,7 +72,7 @@ function BrandCarousel() {
       const loopWidth = rail.scrollWidth / 2;
 
       if (!drag.current.active && time >= drag.current.resumeAt && loopWidth > 0) {
-        rail.scrollLeft += elapsed * 0.036;
+        rail.scrollLeft += elapsed * 0.065;
         if (rail.scrollLeft >= loopWidth) rail.scrollLeft -= loopWidth;
       }
 
