@@ -136,6 +136,7 @@ export function PortfolioHome() {
   const [reelPlaying, setReelPlaying] = useState(true);
   const [heroUiHidden, setHeroUiHidden] = useState(false);
   const reelRef = useRef<HTMLVideoElement>(null);
+  const [aboutTitleFirst, ...aboutTitleRest] = t(homeCopy.aboutTitle, language).split(". ");
 
   const visibleProjects = useMemo(
     () => projects.filter((project) => activeFilter === "all" || project.category === activeFilter),
@@ -336,7 +337,10 @@ export function PortfolioHome() {
 
           <div className="about-copy" data-reveal>
             <p className="section-label">{t(homeCopy.aboutIndex, language)}</p>
-            <h2 id="about-title">{t(homeCopy.aboutTitle, language)}</h2>
+            <h2 id="about-title">
+              <span>{aboutTitleFirst}.</span>
+              <span>{aboutTitleRest.join(". ")}</span>
+            </h2>
             <p>{t(homeCopy.aboutBody, language)}</p>
           </div>
         </div>

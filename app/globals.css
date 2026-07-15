@@ -1088,6 +1088,10 @@ html[lang="en"] .hero-title-wrap h1 {
   font-weight: 900;
 }
 
+.about-copy h2 span {
+  display: block;
+}
+
 .about-copy > p:not(.section-label) {
   max-width: 700px;
   margin: 0;
