@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type MouseEvent as ReactMouseEvent } from "react";
 import type { Language } from "./project-data";
 
 type SiteHeaderProps = {
@@ -63,6 +63,22 @@ export function SiteHeader({ language, languageHref, setSiteLanguage, home = fal
   const aboutHref = languageHref("/#about");
   const contactHref = languageHref("/contact");
   const closeMenu = () => setMenuOpen(false);
+  const navigateToHomeSection = (event: ReactMouseEvent<HTMLAnchorElement>, sectionId: string, href: string) => {
+    if (!home) {
+      closeMenu();
+      return;
+    }
+
+    event.preventDefault();
+    setMenuOpen(false);
+    document.body.style.overflow = "";
+    window.history.pushState(null, "", href);
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
+  };
 
   return (
     <>
@@ -74,7 +90,7 @@ export function SiteHeader({ language, languageHref, setSiteLanguage, home = fal
 
         <nav className="desktop-nav" aria-label={language === "he" ? "ניווט ראשי" : "Main navigation"}>
           <Link href={workHref}>{nav.work[language]}</Link>
-          <Link href={aboutHref}>{nav.about[language]}</Link>
+          <Link href={aboutHref} onClick={(event) => navigateToHomeSection(event, "about", aboutHref)}>{nav.about[language]}</Link>
           <Link href={contactHref}>{nav.contact[language]}</Link>
         </nav>
 
@@ -101,7 +117,7 @@ export function SiteHeader({ language, languageHref, setSiteLanguage, home = fal
       <div className={`mobile-menu ${menuOpen ? "is-open" : ""}`} id="mobile-navigation" aria-hidden={!menuOpen}>
         <nav aria-label={language === "he" ? "ניווט מובייל" : "Mobile navigation"}>
           <Link href={workHref} onClick={closeMenu}>{nav.work[language]}</Link>
-          <Link href={aboutHref} onClick={closeMenu}>{nav.about[language]}</Link>
+          <Link href={aboutHref} onClick={(event) => navigateToHomeSection(event, "about", aboutHref)}>{nav.about[language]}</Link>
           <Link href={contactHref} onClick={closeMenu}>{nav.contact[language]}</Link>
         </nav>
         <div className="mobile-menu-base">

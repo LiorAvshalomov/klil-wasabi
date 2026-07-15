@@ -73,6 +73,7 @@ test("server-renders project facts and case-study content", async () => {
   assert.match(html, />Year</);
   assert.match(html, /Wix Studio/);
   assert.match(html, /Momentum/);
-  assert.match(html, /The challenge/);
+  assert.match(html, />Challenge</);
+  assert.match(html, /Previous project/);
   assert.match(html, /Next project/);
 });

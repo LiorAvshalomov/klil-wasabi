@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!project) return {};
 
   return {
-    title: `${project.title.en} / ${project.title.he} | Klil Israeli`,
+    title: `${project.title.en} | Klil Israeli`,
     description: project.statement.en,
   };
 }
@@ -24,6 +24,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
   const project = projects[projectIndex];
   if (!project) notFound();
 
+  const previousProject = projects[(projectIndex - 1 + projects.length) % projects.length];
   const nextProject = projects[(projectIndex + 1) % projects.length];
-  return <ProjectView project={project} nextProject={nextProject} />;
+  return <ProjectView project={project} previousProject={previousProject} nextProject={nextProject} />;
 }

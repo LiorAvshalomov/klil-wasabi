@@ -1,20 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
 import {
-  categoryLabels,
   clients,
-  projects,
+  moreProjects,
+  selectedProjects,
   type Copy,
-  type ProjectCategory,
 } from "./project-data";
 import { useLanguage } from "./use-language";
 import { SiteHeader } from "./SiteHeader";
 
-type Filter = "all" | ProjectCategory;
-
 const homeCopy = {
+  moreWork: { he: "עוד עבודות", en: "More work" },
   skip: { he: "דילוג לעבודות", en: "Skip to work" },
   navWork: { he: "עבודות", en: "Work" },
   navAbout: { he: "אודות", en: "About" },
@@ -132,17 +130,13 @@ function BrandCarousel() {
 
 export function PortfolioHome() {
   const { language, languageHref, setSiteLanguage, switching } = useLanguage();
-  const [activeFilter, setActiveFilter] = useState<Filter>("all");
   const [reelPlaying, setReelPlaying] = useState(true);
   const [heroUiHidden, setHeroUiHidden] = useState(false);
   const reelRef = useRef<HTMLVideoElement>(null);
   const [aboutTitleFirst, ...aboutTitleRest] = t(homeCopy.aboutTitle, language).split(". ");
   const [aboutBodyFirst, ...aboutBodyRest] = t(homeCopy.aboutBody, language).split(" — ");
 
-  const visibleProjects = useMemo(
-    () => projects.filter((project) => activeFilter === "all" || project.category === activeFilter),
-    [activeFilter],
-  );
+  const visibleProjects = selectedProjects;
 
   useEffect(() => {
     const revealObserver = new IntersectionObserver(
@@ -188,7 +182,7 @@ export function PortfolioHome() {
       window.removeEventListener("scroll", updateScroll);
       if (frame) window.cancelAnimationFrame(frame);
     };
-  }, [activeFilter]);
+  }, []);
 
   const toggleReel = () => {
     const reel = reelRef.current;
@@ -264,28 +258,14 @@ export function PortfolioHome() {
           </div>
         </div>
 
-        <div className="work-filters section-shell" role="group" aria-label={language === "he" ? "סינון עבודות" : "Filter work"}>
-          {(Object.keys(categoryLabels) as Filter[]).map((filter) => (
-            <button
-              type="button"
-              key={filter}
-              className={activeFilter === filter ? "active" : ""}
-              onClick={() => setActiveFilter(filter)}
-              aria-pressed={activeFilter === filter}
-            >
-              {categoryLabels[filter][language]}
-            </button>
-          ))}
-        </div>
-
-        <div className="work-board section-shell" aria-live="polite">
+        <div className="work-board section-shell">
           {visibleProjects.map((project, visibleIndex) => {
             return (
               <Link
                 href={languageHref(`/projects/${project.slug}`)}
-                className={`work-card ${visibleIndex === 0 ? "is-featured" : ""}`}
+                className={`work-card ${visibleIndex < 2 ? "is-primary" : "is-secondary"}`}
                 style={{ "--project-accent": project.accent } as CSSProperties}
-                key={`${activeFilter}-${project.slug}`}
+                key={project.slug}
                 data-reveal
                 aria-label={`${t(homeCopy.openProject, language)} — ${project.title[language]}`}
               >
@@ -304,17 +284,49 @@ export function PortfolioHome() {
                 </div>
                 <div className="work-caption">
                   <div>
-                    <p>{project.eyebrow[language]} / {project.year}</p>
-                    <h3>{project.title[language]}</h3>
+                    <p>{project.eyebrow.en} / {project.year}</p>
+                    <h3 dir="ltr">{project.title.en}</h3>
                   </div>
                   <div className="work-caption-meta">
                     <span>{project.client}</span>
-                    <span>{project.service[language]}</span>
+                    <span>{project.service.en}</span>
                   </div>
                 </div>
               </Link>
             );
           })}
+        </div>
+
+        <div className="more-work section-shell" data-reveal>
+            <div className="more-work-heading">
+              <h3>{t(homeCopy.moreWork, language)}</h3>
+            </div>
+            <div className="more-work-grid">
+              {moreProjects.map((item, index) => (
+                <Link
+                  href={languageHref(`/projects/${item.slug}`)}
+                  className="more-work-card"
+                  key={`${item.slug}-${index}`}
+                  aria-label={`${t(homeCopy.openProject, language)} — ${item.title.en}`}
+                >
+                  <video
+                    data-work-video
+                    src={item.video}
+                    poster={item.poster}
+                    muted
+                    loop
+                    playsInline
+                    preload="metadata"
+                    aria-hidden="true"
+                  />
+                  <span className="more-work-shade" aria-hidden="true" />
+                  <span className="more-work-copy">
+                    <strong dir="ltr">{item.title.en}</strong>
+                    <small>{item.client}</small>
+                  </span>
+                </Link>
+              ))}
+            </div>
         </div>
       </section>
 
