@@ -216,21 +216,25 @@ video {
 }
 
 .language-switch button {
-  min-width: 34px;
-  padding: 7px 8px;
-  border: 1px solid transparent;
+  min-width: auto;
+  padding: 7px 3px;
+  border: 0;
   background: transparent;
   cursor: pointer;
   opacity: .5;
-  transition: opacity 180ms ease, color 180ms ease, border-color 180ms ease;
+  font-weight: 600;
+  transition: opacity 180ms ease, color 180ms ease, font-weight 180ms ease;
 }
 
 .language-switch button:hover,
-.language-switch button:focus-visible,
+.language-switch button:focus-visible {
+  opacity: 1;
+}
+
 .language-switch button.active {
   opacity: 1;
   color: var(--wasabi);
-  border-color: currentColor;
+  font-weight: 900;
 }
 
 .hero {
@@ -3734,6 +3738,10 @@ html[lang="en"] .project-hero-copy h1 {
   cursor: grabbing;
 }
 
+.brand-carousel.is-dragging .brand-carousel-track {
+  animation-play-state: paused;
+}
+
 .brand-carousel-track {
   width: max-content;
   min-width: 100%;
@@ -3741,6 +3749,14 @@ html[lang="en"] .project-hero-copy h1 {
   border-block: 1px solid rgb(225 225 225 / 18%);
   display: flex;
   align-items: stretch;
+  animation: brand-carousel-loop 52s linear infinite;
+  will-change: transform;
+}
+
+@keyframes brand-carousel-loop {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
 }
 
 .brand-logo {
@@ -3930,8 +3946,8 @@ html[lang="en"] .project-hero-copy h1 {
   }
 
   .header-tools .language-switch button {
-    min-width: 30px;
-    padding-inline: 5px;
+    min-width: auto;
+    padding-inline: 3px;
   }
 
   .menu-toggle,

@@ -59,37 +59,14 @@ function t(copy: Copy, language: "he" | "en") {
 
 function BrandCarousel() {
   const railRef = useRef<HTMLDivElement>(null);
-  const drag = useRef({ active: false, x: 0, scrollLeft: 0, resumeAt: 0 });
-
-  useEffect(() => {
-    const rail = railRef.current;
-    if (!rail) return;
-
-    let animationFrame = 0;
-    let lastTime = performance.now();
-    const move = (time: number) => {
-      const elapsed = Math.min(time - lastTime, 32);
-      const loopWidth = rail.scrollWidth / 2;
-
-      if (!drag.current.active && time >= drag.current.resumeAt && loopWidth > 0) {
-        rail.scrollLeft += elapsed * 0.065;
-        if (rail.scrollLeft >= loopWidth) rail.scrollLeft -= loopWidth;
-      }
-
-      lastTime = time;
-      animationFrame = window.requestAnimationFrame(move);
-    };
-
-    animationFrame = window.requestAnimationFrame(move);
-    return () => window.cancelAnimationFrame(animationFrame);
-  }, []);
+  const drag = useRef({ active: false, x: 0, scrollLeft: 0 });
 
   const onPointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
     const rail = railRef.current;
     if (!rail) return;
     const loopWidth = rail.scrollWidth / 2;
     if (rail.scrollLeft < 2 && loopWidth > 0) rail.scrollLeft = loopWidth;
-    drag.current = { active: true, x: event.clientX, scrollLeft: rail.scrollLeft, resumeAt: Number.POSITIVE_INFINITY };
+    drag.current = { active: true, x: event.clientX, scrollLeft: rail.scrollLeft };
     rail.setPointerCapture(event.pointerId);
     rail.classList.add("is-dragging");
   };
@@ -104,7 +81,6 @@ function BrandCarousel() {
     const rail = railRef.current;
     if (!rail) return;
     drag.current.active = false;
-    drag.current.resumeAt = performance.now() + 900;
     if (rail.hasPointerCapture(event.pointerId)) rail.releasePointerCapture(event.pointerId);
     rail.classList.remove("is-dragging");
   };
