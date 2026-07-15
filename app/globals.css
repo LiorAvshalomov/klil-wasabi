@@ -1100,6 +1100,10 @@ html[lang="en"] .hero-title-wrap h1 {
   line-height: 1.42;
 }
 
+.about-copy > p:not(.section-label) span {
+  display: block;
+}
+
 .about-copy ul {
   margin: 60px 0 0;
   padding: 0;
