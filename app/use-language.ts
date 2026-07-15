@@ -17,9 +17,11 @@ export function useLanguage() {
           ? "en"
           : "he";
 
-    setLanguage(initialLanguage);
     document.documentElement.lang = initialLanguage;
     document.documentElement.dir = initialLanguage === "he" ? "rtl" : "ltr";
+    const hydrationSync = window.setTimeout(() => setLanguage(initialLanguage), 0);
+
+    return () => window.clearTimeout(hydrationSync);
   }, []);
 
   const setSiteLanguage = useCallback((nextLanguage: Language) => {

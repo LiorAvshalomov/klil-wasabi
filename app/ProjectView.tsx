@@ -195,7 +195,7 @@ export function ProjectView({ project, projectIndex, nextProject }: ProjectViewP
 
       <footer className="project-footer section-shell">
         <Link href={languageHref("/")}><img src="/brand/logo-light.svg" alt="Wasabi Studio" /></Link>
-        <a href="https://www.behance.net/klilisraeli" target="_blank" rel="noreferrer">{copy.contact[language]} ↗</a>
+        <Link href={languageHref("/contact")}>{copy.contact[language]} ↗</Link>
         <span>{copy.temporary[language]} · © 2026</span>
       </footer>
     </main>

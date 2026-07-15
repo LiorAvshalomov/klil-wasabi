@@ -33,8 +33,25 @@ test("server-renders the finished bilingual portfolio", async () => {
   assert.match(html, /עבודות נבחרות/);
   assert.match(html, /SHOWREEL/);
   assert.match(html, /Wix Studio/);
+  assert.match(html, /Cut to Beat|קאט לביט/);
+  assert.doesNotMatch(html, /Vertical Pressure|לחץ אנכי/);
   assert.match(html, /בחירת שפה/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
+});
+
+test("server-renders direct contact and project brief routes", async () => {
+  const contactResponse = await render("/contact");
+  assert.equal(contactResponse.status, 200);
+  const contactHtml = await contactResponse.text();
+  assert.match(contactHtml, /mailto:klilisraeli%40gmail\.com|mailto:klilisraeli@gmail\.com/);
+  assert.match(contactHtml, /PROJECT BRIEF|טופס הפרויקט/);
+
+  const briefResponse = await render("/contact/brief");
+  assert.equal(briefResponse.status, 200);
+  const briefHtml = await briefResponse.text();
+  assert.match(briefHtml, /PROJECT BRIEF \/ 02/);
+  assert.match(briefHtml, /name="projectType"/);
+  assert.match(briefHtml, /name="message"/);
 });
 
 test("server-renders project facts and case-study content", async () => {
